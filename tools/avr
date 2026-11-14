@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#
+# Run a command with the AVR toolchain inside a Docker container, from the
+# repository root. The image is built from .devcontainer/Dockerfile on first
+# use.
+#
+#   tools/avr make
+#   AVR_PORT=/dev/ttyUSB0 tools/avr make flash
+#
+# Environment:
+#   AVR_IMAGE   image name (default: matrix-marquee-avr)
+#   AVR_PORT    serial port of the board (default: /dev/ttyACM0); passed
+#               into the container as a device and as AVR_PORT for make
+
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+image="${AVR_IMAGE:-matrix-marquee-avr}"
+port="${AVR_PORT:-/dev/ttyACM0}"
+
+if ! docker image inspect "$image" >/dev/null 2>&1; then
+  docker build -t "$image" "$repo_root/.devcontainer"
+fi
+
+args=(--rm -v "$repo_root:/srv" --user "$(id -u):$(id -g)"
+      -e AVR_PORT="$port")
+
+# Allocate a TTY only when attached to one, so the script also works in CI.
+if [ -t 0 ] && [ -t 1 ]; then
+  args+=(-it)
+fi
+
+if [ -e "$port" ]; then
+  args+=(--device="$port" --group-add "$(stat -c %g "$port")")
+fi
+
+exec docker run "${args[@]}" "$image" "$@"

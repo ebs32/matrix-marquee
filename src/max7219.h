@@ -1,0 +1,23 @@
+/* SPDX-License-Identifier: MIT */
+
+#ifndef MAX7219_H
+#define MAX7219_H
+
+/* Register addresses. */
+#define MAX7219_REG_DIGIT_0      0x01
+#define MAX7219_REG_DIGIT_7      0x08
+#define MAX7219_REG_DECODE_MODE  0x09
+#define MAX7219_REG_INTENSITY    0x0A
+#define MAX7219_REG_SCAN_LIMIT   0x0B
+#define MAX7219_REG_SHUTDOWN     0x0C
+#define MAX7219_REG_DISPLAY_TEST 0x0F
+
+/* Register values. */
+#define MAX7219_NO_DECODE        0x00
+#define MAX7219_SCAN_ALL_DIGITS  0x07
+#define MAX7219_NORMAL_OPERATION 0x01
+#define MAX7219_SHUTDOWN_MODE    0x00
+#define MAX7219_DISPLAY_TEST_OFF 0x00
+#define MAX7219_ALL_SEGMENTS_OFF 0x00
+
+#endif /* MAX7219_H */

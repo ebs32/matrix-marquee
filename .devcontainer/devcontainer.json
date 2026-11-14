@@ -1,0 +1,17 @@
+// Reference: https://containers.dev/implementors/json_reference/
+{
+  "name": "avr",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "containerUser": "ubuntu",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "EditorConfig.EditorConfig",
+        "ms-vscode.cpptools-extension-pack",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  }
+}

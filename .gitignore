@@ -1,0 +1,11 @@
+# AVR build artifacts
+*.elf
+*.hex
+*.eep
+*.map
+*.o
+*.d
+
+# Editor and OS files
+*.log
+.DS_Store

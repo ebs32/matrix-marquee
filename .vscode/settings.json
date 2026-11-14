@@ -1,0 +1,13 @@
+{
+  "C_Cpp.default.compilerPath": "/usr/bin/avr-gcc",
+  "C_Cpp.default.compilerArgs": [
+    "-mmcu=atmega328p"
+  ],
+  "C_Cpp.default.defines": [
+    "F_CPU=16000000UL"
+  ],
+  "C_Cpp.default.cStandard": "c11",
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/src"
+  ]
+}

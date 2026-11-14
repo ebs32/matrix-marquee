@@ -1,0 +1,22 @@
+---
+BasedOnStyle: LLVM
+
+# Indentation
+ContinuationIndentWidth: 2
+IndentPPDirectives: BeforeHash
+
+# Line breaking
+AlignAfterOpenBracket: BlockIndent
+PenaltyBreakAssignment: 1000 # Break inside parentheses, not after =
+
+# Spacing
+SpaceAfterCStyleCast: true
+
+# Alignment
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveMacros: AcrossEmptyLinesAndComments
+AlignEscapedNewlines: DontAlign
+
+# Includes
+SortIncludes: Never
