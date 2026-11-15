@@ -1,0 +1,72 @@
+# Review pull requests with Claude and approve them when there are no
+# blocking issues. The approval comes from github-actions[bot] and counts
+# toward the ruleset's required approval on main.
+name: Review
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# One review per PR at a time; a new push cancels the running one.
+concurrency:
+  group: review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Only the owner's non-draft PRs from this repository, never forks.
+    if: >-
+      github.event.pull_request.user.login == github.repository_owner &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Review
+        id: review
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Review this pull request. The project is AVR firmware in C11 for
+            an ATmega328P driving a MAX7219 LED matrix; the README describes
+            the hardware and settings. The PR branch is checked out in the
+            current directory.
+
+            Review only the changes in this PR; get them with `gh pr diff`,
+            since the checkout has no history to compare against. Look for
+            bugs, hardware or timing mistakes, code that breaks the existing
+            style (see .clang-format and .editorconfig), and README text the
+            changes make out of date. Post inline comments for specific
+            issues. Don't comment on matters of taste.
+
+            Set approve to true only if nothing in the changes needs fixing
+            before merging. Mention problems you notice outside the changes in
+            summary, but don't let them block approval.
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr diff:*),Bash(gh pr view:*)"
+            --json-schema '{"type":"object","properties":{"approve":{"type":"boolean"},"summary":{"type":"string"}},"required":["approve","summary"]}'
+
+      - name: Submit review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          APPROVE: ${{ fromJSON(steps.review.outputs.structured_output).approve }}
+          SUMMARY: ${{ fromJSON(steps.review.outputs.structured_output).summary }}
+        run: |
+          if [ "$APPROVE" = true ]; then
+            gh pr review "$PR" --approve --body "$SUMMARY"
+          else
+            gh pr review "$PR" --request-changes --body "$SUMMARY"
+          fi
