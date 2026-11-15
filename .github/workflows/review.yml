@@ -44,13 +44,15 @@ jobs:
             the hardware and settings. The PR branch is checked out in the
             current directory.
 
-            Look for bugs, hardware or timing mistakes, code that breaks the
-            existing style (see .clang-format and .editorconfig), and README
-            text that no longer matches the code. Post inline comments for
-            specific issues. Don't comment on matters of taste.
+            Review only the changes in this PR. Look for bugs, hardware or
+            timing mistakes, code that breaks the existing style (see
+            .clang-format and .editorconfig), and README text the changes make
+            out of date. Post inline comments for specific issues. Don't
+            comment on matters of taste.
 
-            Set approve to true only if nothing you found needs fixing before
-            merging. Put a short overall verdict in summary.
+            Set approve to true only if nothing in the changes needs fixing
+            before merging. Mention problems you notice outside the changes in
+            summary, but don't let them block approval.
           claude_args: |
             --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr diff:*),Bash(gh pr view:*)"
             --json-schema '{"type":"object","properties":{"approve":{"type":"boolean"},"summary":{"type":"string"}},"required":["approve","summary"]}'
