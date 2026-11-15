@@ -20,8 +20,8 @@ The firmware sends commands to the MAX7219 by toggling GPIO pins in software
 hardware SPI is fixed to D10 (SS), D11 (MOSI) and D13 (SCK), and D13 also
 drives the on-board L LED. Bit-banging lets the matrix use any free pins, and
 it is fast enough here: each scroll step sends 18 short commands, which takes
-well under a millisecond. A4 and A5 are the Uno's I²C pins, but the firmware
-uses them as plain GPIO.
+under a millisecond. A4 and A5 are the Uno's I²C pins, but the firmware uses
+them as plain GPIO.
 
 The L LED pin (D13 / PB5) is set as an output and kept low, so the LED stays
 off.
