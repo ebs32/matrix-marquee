@@ -44,11 +44,12 @@ jobs:
             the hardware and settings. The PR branch is checked out in the
             current directory.
 
-            Review only the changes in this PR. Look for bugs, hardware or
-            timing mistakes, code that breaks the existing style (see
-            .clang-format and .editorconfig), and README text the changes make
-            out of date. Post inline comments for specific issues. Don't
-            comment on matters of taste.
+            Review only the changes in this PR; get them with `gh pr diff`,
+            since the checkout has no history to compare against. Look for
+            bugs, hardware or timing mistakes, code that breaks the existing
+            style (see .clang-format and .editorconfig), and README text the
+            changes make out of date. Post inline comments for specific
+            issues. Don't comment on matters of taste.
 
             Set approve to true only if nothing in the changes needs fixing
             before merging. Mention problems you notice outside the changes in
