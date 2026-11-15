@@ -19,6 +19,7 @@ jobs:
 
       - name: Build
         run: |
+          set -o pipefail
           tools/avr make 2>&1 | tee build.log
           if grep -q 'warning:' build.log; then
             echo "::error::The build produced warnings"
