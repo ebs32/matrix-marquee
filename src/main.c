@@ -346,7 +346,8 @@ int main(void) {
     /*
      * Clear the digits before shutting down. Some MAX7219 clones briefly show
      * the old digit data again when they leave shutdown, which ghosts this
-     * frame next to the new one. Blank digits leave nothing to show.
+     * frame next to the new one. Blank digits leave nothing to show. The
+     * clear must come before shutdown; clearing during shutdown is too late.
      */
     clear_panel();
 
