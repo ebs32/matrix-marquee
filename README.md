@@ -5,18 +5,11 @@ MAX7219-compatible LED matrix. It targets the ATmega328P on an Arduino Uno R3.
 
 ## Hardware
 
-Connect the matrix to the Arduino Uno R3 as follows. DIN, CLK and LOAD each
-go through a 120 Ω series resistor:
+Connect the matrix to the Arduino Uno R3 as shown below. DIN, CS / LOAD and
+CLK go to A3, A4 and A5 (PC3–PC5 on the ATmega328P), each through a 120 Ω
+series resistor:
 
 ![Wiring diagram: Arduino Uno R3 pins A3, A4 and A5 connect through 120 Ω resistors to the MAX7219 DIN, CS/LOAD and CLK pins; 5V and GND connect to VCC and GND; the matrix scrolls "Hello, world!"](assets/wiring.svg)
-
-| Matrix signal | Arduino pin | ATmega328P pin | Series resistor |
-| --- | --- | --- | --- |
-| DIN | A3 | PC3 | 120 Ω |
-| CS / LOAD | A4 | PC4 | 120 Ω |
-| CLK | A5 | PC5 | 120 Ω |
-| VCC | 5V | — | — |
-| GND | GND | — | — |
 
 Place the resistors close to the Arduino end of the wires. They limit the
 current into the signal lines and damp ringing on fast edges, which matters
