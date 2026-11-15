@@ -5,18 +5,11 @@ MAX7219-compatible LED matrix. It targets the ATmega328P on an Arduino Uno R3.
 
 ## Hardware
 
-Connect the matrix to the Arduino Uno R3 as follows. DIN, CLK and LOAD each
-go through a 120 Ω series resistor:
+Connect the matrix to the Arduino Uno R3 as shown below. DIN, CS / LOAD and
+CLK go to A3, A4 and A5 (PC3–PC5 on the ATmega328P), each through a 120 Ω
+series resistor:
 
 ![Wiring diagram: Arduino Uno R3 pins A3, A4 and A5 connect through 120 Ω resistors to the MAX7219 DIN, CS/LOAD and CLK pins; 5V and GND connect to VCC and GND; the matrix scrolls "Hello, world!"](assets/wiring.svg)
-
-| Matrix signal | Arduino pin | ATmega328P pin | Series resistor |
-| --- | --- | --- | --- |
-| DIN | A3 | PC3 | 120 Ω |
-| CS / LOAD | A4 | PC4 | 120 Ω |
-| CLK | A5 | PC5 | 120 Ω |
-| VCC | 5V | — | — |
-| GND | GND | — | — |
 
 Place the resistors close to the Arduino end of the wires. They limit the
 current into the signal lines and damp ringing on fast edges, which matters
@@ -26,8 +19,9 @@ The firmware sends commands to the MAX7219 by toggling GPIO pins in software
 (bit-banging) rather than through the ATmega328P's hardware SPI. On the Uno,
 hardware SPI is fixed to D10 (SS), D11 (MOSI) and D13 (SCK), and D13 also
 drives the on-board L LED. Bit-banging lets the matrix use any free pins, and
-it is fast enough here: each scroll step sends only a few short commands. A4
-and A5 are the Uno's I²C pins, but the firmware uses them as plain GPIO.
+it is fast enough here: each scroll step sends 18 short commands, which takes
+under a millisecond. A4 and A5 are the Uno's I²C pins, but the firmware uses
+them as plain GPIO.
 
 The L LED pin (D13 / PB5) is set as an output and kept low, so the LED stays
 off.
