@@ -1,0 +1,51 @@
+# Build the firmware for a version tag and publish it as a GitHub release,
+# with a checksum file and a build provenance attestation. The release notes
+# come from the annotated tag's message.
+#
+#   git tag -a v1.0.0 -F notes.txt
+#   git push origin v1.0.0
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write     # create the release
+      id-token: write     # sign the attestation
+      attestations: write # store the attestation
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Build
+        run: tools/avr make
+
+      - name: Package
+        run: |
+          mkdir dist
+          cp main.hex "dist/matrix-marquee-$TAG-atmega328p.hex"
+          cd dist
+          sha256sum -- *.hex > SHA256SUMS
+
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: dist/*.hex
+
+      # Read the notes through the API: the checkout doesn't keep the
+      # annotated tag's message. A lightweight tag has no message and
+      # fails here.
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq .object.sha)"
+          gh api "repos/$GITHUB_REPOSITORY/git/tags/$tag_sha" --jq .message > notes.md
+          gh release create "$TAG" dist/* --title "$TAG" --notes-file notes.md --verify-tag

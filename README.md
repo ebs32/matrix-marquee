@@ -60,6 +60,22 @@ AVR_PORT=/dev/ttyUSB0 make flash
 On Linux, flashing natively requires access to the serial device (usually
 membership in the `dialout` or `uucp` group).
 
+## Flash a release
+
+Each [release](https://github.com/ebs32/matrix-marquee/releases) includes a
+hex file built with the default settings from `src/config.h`. Flashing it
+needs only `avrdude`:
+
+```sh
+avrdude -p atmega328p -c arduino -P /dev/ttyACM0 -b 115200 \
+  -U flash:w:matrix-marquee-v1.0.0-atmega328p.hex:i
+```
+
+Replace `v1.0.0` with the version you downloaded. To check the file, run
+`sha256sum -c SHA256SUMS` next to it, and
+`gh attestation verify <file> -R ebs32/matrix-marquee` to confirm it was built
+by this repository's release workflow.
+
 ## Configuration
 
 Settings live in [`src/config.h`](src/config.h). Rebuild and flash after
