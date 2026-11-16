@@ -39,9 +39,9 @@ jobs:
             exit 1
           fi
           ci="$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs?check_name=build" \
-            --jq '[.check_runs[] | select(.app.slug == "github-actions")][0].conclusion')"
+            --jq '[.check_runs[] | select(.app.slug == "github-actions")][0] | (.conclusion // .status // "missing")')"
           if [ "$ci" != success ]; then
-            echo "::error::CI build on $GITHUB_SHA is '${ci:-missing}', not success"
+            echo "::error::CI build on $GITHUB_SHA is '$ci', not success"
             exit 1
           fi
 
