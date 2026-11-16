@@ -5,3 +5,7 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # Only propose releases that are at least two weeks old, so a
+    # compromised release has time to be noticed and pulled first.
+    cooldown:
+      default-days: 14
