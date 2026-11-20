@@ -28,12 +28,24 @@ jobs:
         with:
           fetch-depth: 0 # full history, to check the tag is on main
 
-      # A published release can't be replaced, so refuse tags on commits
-      # that aren't on main or that haven't passed CI.
+      # A published release can't be replaced, so refuse tags that aren't
+      # Semantic Versioning versions, and tags on commits that aren't on main
+      # or that haven't passed CI. The version check also keeps shell
+      # characters out of the build, which uses the tag in file names.
+      # SemVer build metadata (v1.2.3+build.7) isn't allowed: it doesn't
+      # count toward version precedence, so v1.2.3+a and v1.2.3+b would be
+      # two releases of the same version.
       - name: Check the tagged commit
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          num='(0|[1-9][0-9]*)'
+          pre="($num|[0-9]*[A-Za-z-][0-9A-Za-z-]*)"
+          semver="^v$num\\.$num\\.$num(-$pre(\\.$pre)*)?\$"
+          if [[ ! $TAG =~ $semver ]]; then
+            echo "::error::$TAG isn't a version tag like v1.2.3 or v1.2.3-rc.1 (build metadata isn't allowed)"
+            exit 1
+          fi
           if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
             echo "::error::$TAG points to a commit that isn't on main"
             exit 1
@@ -49,15 +61,17 @@ jobs:
         run: tools/avr make
 
       - name: Package
-        run: |
-          mkdir dist
-          cp main.hex "dist/matrix-marquee-$TAG-atmega328p.hex"
-          cd dist
-          sha256sum -- *.hex > SHA256SUMS
+        run: tools/avr make dist VERSION="$TAG"
 
       - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
-          subject-path: dist/*.hex
+          subject-path: dist/*
+
+      # After the attestation, so SHA256SUMS isn't attested as a release file.
+      - name: Checksums
+        run: |
+          cd dist
+          sha256sum -- * > SHA256SUMS
 
       # Read the notes through the API: the checkout doesn't keep the
       # annotated tag's message. A lightweight tag has no message and
