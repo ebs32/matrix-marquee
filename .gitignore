@@ -5,6 +5,7 @@
 *.map
 *.o
 *.d
+dist/
 
 # Editor and OS files
 *.log

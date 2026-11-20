@@ -39,17 +39,16 @@ jobs:
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
 
-            Review this pull request. The project is AVR firmware in C11 for
-            an ATmega328P driving a MAX7219 LED matrix; the README describes
-            the hardware and settings. The PR branch is checked out in the
-            current directory.
+            Review this pull request. The PR branch is checked out in the
+            current directory. Read AGENTS.md first for what the project is,
+            its conventions and what to look for; if it doesn't exist, use
+            the README and the repository's style and lint config files.
 
             Review only the changes in this PR; get them with `gh pr diff`,
             since the checkout has no history to compare against. Look for
-            bugs, hardware or timing mistakes, code that breaks the existing
-            style (see .clang-format and .editorconfig), and README text the
-            changes make out of date. Post inline comments for specific
-            issues. Don't comment on matters of taste.
+            bugs, code that breaks the project's conventions, and
+            documentation the changes make out of date. Post inline comments
+            for specific issues. Don't comment on matters of taste.
 
             Set approve to true only if nothing in the changes needs fixing
             before merging. Mention problems you notice outside the changes in
